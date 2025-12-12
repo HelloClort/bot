@@ -1,25 +1,30 @@
-from quarry.net.client import ClientFactory, SpawningClient
+from quarry.net.client import Client, ClientFactory
 from twisted.internet import reactor
 import time, threading
+from flask import Flask
+from threading import Thread
 
 SERVER_IP = "JollyMan.aternos.me"
 SERVER_PORT = 32899
 USERNAME = "AFK_Bot"  # cracked username
+MINOR_MOVE_INTERVAL = 300
 
-# Optional: minor movement to bypass AFK kick
-MINOR_MOVE_INTERVAL = 300  # seconds between small movements
 
-class AFKClient(SpawningClient):
-    def player_joined(self):
-        # Player spawned, start minor AFK loop
-        self._start_afk_loop()
+# Flask keep-alive
+app = Flask("")
+@app.route("/")
+def home(): return "Bot alive!"
+def run(): app.run(host="0.0.0.0", port=8080)
+Thread(target=run).start()
 
-    def _start_afk_loop(self):
+# AFK bot
+class AFKClient(Client):
+    def packet_spawn(self, packet, buff=None):
+        # Start minor rotation movement
         def loop():
             while True:
                 try:
                     self.rotation.yaw += 0.01
-                    self.rotation.pitch += 0.0
                 except Exception:
                     pass
                 time.sleep(MINOR_MOVE_INTERVAL)
@@ -39,7 +44,7 @@ def connect():
     except Exception as e:
         print(f"Disconnected, retrying in 10 seconds... {e}")
         time.sleep(10)
-        connect()  # Auto-reconnect
+        connect()  # auto-reconnect
 
 if __name__ == "__main__":
     connect()
