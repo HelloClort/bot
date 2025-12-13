@@ -1,47 +1,46 @@
-from quarry.net.client import ClientFactory, SpawningClient
 from twisted.internet import reactor
+from quarry.net.client import ClientFactory, ClientProtocol
+from quarry.net.auth import OfflineProfile
 import time
 import threading
 
-# -------- CONFIG --------
+# ========= CONFIG =========
 SERVER_IP = "JollyMan.aternos.me"
 SERVER_PORT = 32899
 USERNAME = "AFK_Bot"
-# ------------------------
+# ==========================
 
-class AFKBot(SpawningClient):
+
+class AFKProtocol(ClientProtocol):
+    def connection_made(self):
+        super().connection_made()
+        print("Connected to server")
+
     def player_joined(self):
-        print("Bot joined server")
+        print("Spawned in world")
 
         def anti_afk():
             while True:
                 try:
-                    self.send_packet(
-                        "player_position",
-                        self.buff_type.pack(
-                            "ddd?",
-                            self.player.x,
-                            self.player.y,
-                            self.player.z,
-                            True
-                        )
-                    )
+                    # Just stay alive, quarry handles keepalive automatically
+                    pass
                 except:
                     pass
-                time.sleep(120)
+                time.sleep(60)
 
         threading.Thread(target=anti_afk, daemon=True).start()
 
 
-class BotFactory(ClientFactory):
-    protocol = AFKBot
+class AFKFactory(ClientFactory):
+    protocol = AFKProtocol
 
 
-def start():
-    factory = BotFactory()
-    factory.connect(SERVER_IP, SERVER_PORT, username=USERNAME)
+def main():
+    profile = OfflineProfile(USERNAME)
+    factory = AFKFactory(profile)
+    factory.connect(SERVER_IP, SERVER_PORT)
     reactor.run()
 
 
 if __name__ == "__main__":
-    start()
+    main()
