@@ -5,8 +5,8 @@ import time
 import threading
 
 # ===== CONFIG =====
-SERVER_IP = "JollyMan.aternos.me"
-SERVER_PORT = 32899
+SERVER_IP = "BackOnTrack.aternos.me"
+SERVER_PORT = 46429
 USERNAME = "AFK_Bot"
 RECONNECT_DELAY = 5      # seconds
 MOVE_INTERVAL = 60       # seconds
