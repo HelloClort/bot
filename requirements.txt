@@ -1,3 +1,2 @@
 quarry==1.9.0
 twisted
-flask
