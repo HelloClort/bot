@@ -6,7 +6,7 @@ const app = express();
 const options = {
   host: 'xnextron-mseJ.aternos.me', // e.g., 'play.hypixel.net'
   port: 34723,                 // Default is 25565
-  username: 'BotName',         // Your bot's name
+  username: 'AFKBOT',         // Your bot's name
   version: false               // Auto-detect version
   // password: 'password'      // Add if using a paid account or /login
 };
