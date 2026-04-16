@@ -4,7 +4,7 @@ const app = express();
 
 // --- CONFIGURATION ---
 const options = {
-  host: ' BackOnTrack.aternos.me',
+  host: 'BackOnTrack.aternos.me',
   port: 46429,             
   username: 'AFKBOT',         // Your bot's name
   version: false               
