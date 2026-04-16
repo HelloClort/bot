@@ -4,14 +4,12 @@ const app = express();
 
 // --- CONFIGURATION ---
 const options = {
-  host: 'xnextron-mseJ.aternos.me', // e.g., 'play.hypixel.net'
-  port: 34723,                 // Default is 25565
+  host: 'exampleserver.com',
+  port: 19132,             
   username: 'AFKBOT',         // Your bot's name
-  version: false               // Auto-detect version
-  // password: 'password'      // Add if using a paid account or /login
+  version: false               
+  // password: 'password'      // Add if using /login
 };
-
-// --- WEB SERVER (To keep the bot online) ---
 const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => {
   res.send('Bot is running!');
@@ -19,8 +17,6 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-// --- BOT LOGIC ---
 let bot;
 
 function createBot() {
@@ -34,21 +30,19 @@ function createBot() {
 
   bot.on('end', (reason) => {
     console.log(`Bot disconnected: ${reason}`);
-    console.log('Reconnecting in 5 seconds...');
-    setTimeout(createBot, 5000); // Auto-reconnect
+    setTimeout(createBot, 5000);
   });
 
   bot.on('error', (err) => {
     console.log(`Error: ${err.message}`);
-    bot.end(); // Trigger auto-reconnect
+    bot.end();
   });
   
   bot.on('kicked', console.log)
 }
 
-// --- ANTI-AFK FUNCTION ---
+-
 function startAntiAfk() {
-  // Make the bot jump and rotate every few seconds to avoid AFK kick
   setInterval(() => {
     if (bot && bot.entity) {
       bot.setControlState('jump', true);
