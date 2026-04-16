@@ -2,12 +2,11 @@ const mineflayer = require('mineflayer');
 const express = require('express');
 const app = express();
 
-// --- CONFIGURATION ---
 const options = {
   host: 'BackOnTrack.aternos.me',
   port: 46429,             
   username: 'AFKBOT',         // Your bot's name
-  version: false               
+  version: '1.21.11',              
   // password: 'password'      // Add if using /login
 };
 const PORT = process.env.PORT || 3000;
@@ -21,12 +20,30 @@ let bot;
 
 function createBot() {
   bot = mineflayer.createBot(options);
-
-  bot.on('login', () => {
-    console.log('Bot has logged in!');
-    bot.chat('Hello! I am online.'); 
+  bot.once('spawn', () => {
+    console.log('Bot spawned in the world!');
     startAntiAfk();
   });
+
+  bot.on('chat', (username, message) => {
+    if (username === bot.username) return;
+    console.log(`${username} said: ${message}`);
+  });
+
+  bot.on('end', (reason) => {
+    console.log(`Bot disconnected: ${reason}. Reconnecting in 10s...`);
+    // Increased timeout to prevent spam-blocking
+    setTimeout(createBot, 10000); 
+  });
+
+  bot.on('error', (err) => {
+    if (err.code === 'ECONNREFUSED') {
+      console.log(`Failed to connect to ${err.address}. Is the server offline?`);
+    } else {
+      console.log(`Error: ${err.message}`);
+    }
+  });
+}
 
   bot.on('end', (reason) => {
     console.log(`Bot disconnected: ${reason}`);
